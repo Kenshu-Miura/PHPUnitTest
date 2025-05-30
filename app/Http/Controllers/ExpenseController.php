@@ -15,23 +15,31 @@ class ExpenseController extends Controller
 
     public function index()
     {
-        $expenses = Expense::where('user_id', Auth::id())
+        $expenses = Expense::where('user_id', auth()->id())
             ->orderBy('expense_date', 'desc')
             ->get();
-        return view('expenses.index', compact('expenses'));
+
+        return view('expenses.index', [
+            'expenses' => $expenses,
+            'categories' => Expense::CATEGORIES
+        ]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'amount' => 'required|numeric|min:0',
-            'description' => 'required|max:255',
-            'category' => 'required|max:50',
+            'category' => 'required|in:' . implode(',', Expense::CATEGORIES),
+            'description' => 'nullable|string|max:255',
             'expense_date' => 'required|date'
         ]);
 
-        $expense = new Expense($request->all());
-        $expense->user_id = Auth::id();
+        $expense = new Expense();
+        $expense->user_id = auth()->id();
+        $expense->amount = $request->amount;
+        $expense->category = $request->category;
+        $expense->description = $request->description;
+        $expense->expense_date = $request->expense_date;
         $expense->save();
 
         return redirect()->route('expenses.index')
@@ -40,7 +48,7 @@ class ExpenseController extends Controller
 
     public function destroy(Expense $expense)
     {
-        if ($expense->user_id !== Auth::id()) {
+        if ($expense->user_id !== auth()->id()) {
             abort(403);
         }
         

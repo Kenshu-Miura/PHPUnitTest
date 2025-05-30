@@ -12,14 +12,27 @@ class Expense extends Model
     protected $fillable = [
         'user_id',
         'amount',
-        'description',
         'category',
+        'description',
         'expense_date'
     ];
 
     protected $casts = [
-        'expense_date' => 'date:Y-m-d',
+        'expense_date' => 'date',
         'amount' => 'integer'
+    ];
+
+    public const CATEGORIES = [
+        '食費',
+        '交通費',
+        '住居費',
+        '光熱費',
+        '通信費',
+        '日用品',
+        '医療費',
+        '教育費',
+        '娯楽費',
+        'その他'
     ];
 
     public function user()
