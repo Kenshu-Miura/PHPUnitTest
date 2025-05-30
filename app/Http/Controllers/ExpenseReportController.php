@@ -35,6 +35,12 @@ class ExpenseReportController extends Controller
             ];
         });
 
+        // 過去6ヶ月の月を生成
+        $months = collect();
+        for ($i = 5; $i >= 0; $i--) {
+            $months->push($date->copy()->subMonths($i)->format('Y-m'));
+        }
+
         // 過去6ヶ月の月次合計
         $monthlyTotals = Expense::where('user_id', auth()->id())
             ->where('expense_date', '>=', $date->copy()->subMonths(5)->startOfMonth())
@@ -46,6 +52,15 @@ class ExpenseReportController extends Controller
             ->groupBy('month')
             ->orderBy('month')
             ->get();
+
+        // データが存在しない月は0として追加
+        $monthlyTotals = $months->map(function ($month) use ($monthlyTotals) {
+            $data = $monthlyTotals->firstWhere('month', $month);
+            return [
+                'month' => $month,
+                'total' => $data ? $data->total : 0
+            ];
+        });
 
         // デバッグ情報
         \Log::info('Category Totals:', $categoryTotals->toArray());
