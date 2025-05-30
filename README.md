@@ -14,6 +14,8 @@
 - Laravel 10.x
 - SQLite
 - Tailwind CSS
+- Docker
+- Docker Compose
 
 ## セットアップ
 1. リポジトリをクローン
@@ -34,12 +36,26 @@ php artisan key:generate
 
 4. データベースのセットアップ
 ```bash
+# セッションテーブルの作成
+php artisan session:table
+
+# マイグレーションの実行
 php artisan migrate:fresh --seed
 ```
 
 5. 開発サーバーの起動
 ```bash
-php artisan serve
+# サーバーの起動
+./vendor/bin/sail up -d
+
+# サーバーの停止
+./vendor/bin/sail down
+```
+
+6. アプリケーションへのアクセス
+ブラウザで以下のURLにアクセスしてください：
+```
+http://localhost
 ```
 
 ## テストユーザー
