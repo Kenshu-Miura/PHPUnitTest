@@ -74,5 +74,22 @@ http://localhost
 - メールアドレス: test@example.com
 - パスワード: password
 
+## テスト実行
+以下のコマンドでテストを実行できます：
+
+```bash
+# すべてのテストを実行
+./vendor/bin/sail test
+
+# 特定のテストファイルのみ実行
+./vendor/bin/sail test tests/Feature/ExpenseTest.php
+
+# 特定のテストメソッドのみ実行
+./vendor/bin/sail test --filter test_can_create_expense
+
+# テストカバレッジレポートの生成
+./vendor/bin/sail test --coverage
+```
+
 ## ライセンス
 MITライセンス

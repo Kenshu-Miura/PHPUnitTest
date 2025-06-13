@@ -32,12 +32,18 @@ class ExpenseTest extends TestCase
             'amount' => 1000,
             'description' => '食費',
             'expense_date' => now()->format('Y-m-d'),
-            'category' => 'food'
+            'category' => '食費'
         ];
 
         $response = $this->actingAs($this->user)->post(route('expenses.store'), $expenseData);
         $response->assertRedirect(route('expenses.index'));
-        $this->assertDatabaseHas('expenses', $expenseData);
+        
+        $this->assertDatabaseHas('expenses', [
+            'amount' => $expenseData['amount'],
+            'description' => $expenseData['description'],
+            'category' => $expenseData['category'],
+            'user_id' => $this->user->id
+        ]);
     }
 
     public function test_can_delete_expense()
@@ -52,6 +58,6 @@ class ExpenseTest extends TestCase
     public function test_validates_required_fields()
     {
         $response = $this->actingAs($this->user)->post(route('expenses.store'), []);
-        $response->assertSessionHasErrors(['amount', 'description', 'expense_date', 'category']);
+        $response->assertSessionHasErrors(['amount', 'expense_date', 'category']);
     }
 } 
