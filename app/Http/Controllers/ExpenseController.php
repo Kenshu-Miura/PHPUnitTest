@@ -92,4 +92,9 @@ class ExpenseController extends Controller
         return redirect()->route('expenses.index')
             ->with('success', '支出を更新しました。');
     }
+
+    public function show(Expense $expense)
+    {
+        return view('expenses.show', compact('expense'));
+    }
 } 

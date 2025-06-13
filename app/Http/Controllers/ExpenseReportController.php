@@ -41,24 +41,20 @@ class ExpenseReportController extends Controller
             $months->push($date->copy()->subMonths($i)->format('Y-m'));
         }
 
-        // 過去6ヶ月の月次合計
-        $monthlyTotals = Expense::where('user_id', auth()->id())
+        // 過去6ヶ月分の支出を取得
+        $expenses = Expense::where('user_id', auth()->id())
             ->where('expense_date', '>=', $date->copy()->subMonths(5)->startOfMonth())
             ->where('expense_date', '<=', $date->endOfMonth())
-            ->select(
-                DB::raw('DATE_FORMAT(expense_date, "%Y-%m") as month'),
-                DB::raw('SUM(amount) as total')
-            )
-            ->groupBy('month')
-            ->orderBy('month')
             ->get();
 
-        // データが存在しない月は0として追加
-        $monthlyTotals = $months->map(function ($month) use ($monthlyTotals) {
-            $data = $monthlyTotals->firstWhere('month', $month);
+        // 月ごとに合計を集計
+        $monthlyTotals = $months->map(function ($month) use ($expenses) {
+            $total = $expenses->filter(function ($expense) use ($month) {
+                return $expense->expense_date->format('Y-m') === $month;
+            })->sum('amount');
             return [
                 'month' => $month,
-                'total' => $data ? $data->total : 0
+                'total' => $total
             ];
         });
 

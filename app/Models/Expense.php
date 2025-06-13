@@ -39,4 +39,14 @@ class Expense extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public static function boot()
+    {
+        parent::boot();
+        static::saving(function ($expense) {
+            if (!in_array($expense->category, self::CATEGORIES, true)) {
+                throw new \InvalidArgumentException('無効なカテゴリーです: ' . $expense->category);
+            }
+        });
+    }
 } 

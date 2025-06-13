@@ -52,4 +52,36 @@ class ExpenseTest extends TestCase
         $this->assertInstanceOf(\Carbon\Carbon::class, $expense->expense_date);
         $this->assertEquals($date, $expense->expense_date->format('Y-m-d'));
     }
+
+    public function test_expense_can_be_created()
+    {
+        $user = User::factory()->create();
+        $expense = Expense::factory()->create([
+            'user_id' => $user->id,
+            'amount' => 1000,
+            'category' => '食費',
+            'description' => 'テスト支出',
+            'expense_date' => now()
+        ]);
+
+        $this->assertInstanceOf(Expense::class, $expense);
+        $this->assertEquals(1000, $expense->amount);
+        $this->assertEquals('食費', $expense->category);
+    }
+
+    public function test_expense_belongs_to_user()
+    {
+        $user = User::factory()->create();
+        $expense = Expense::factory()->create(['user_id' => $user->id]);
+
+        $this->assertInstanceOf(User::class, $expense->user);
+        $this->assertEquals($user->id, $expense->user->id);
+    }
+
+    public function test_expense_category_must_be_valid()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        
+        Expense::factory()->create(['category' => '無効なカテゴリー']);
+    }
 } 

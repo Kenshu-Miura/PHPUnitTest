@@ -20,11 +20,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // 支出管理のルート
     Route::get('/expenses', [ExpenseController::class, 'index'])->name('expenses.index');
     Route::post('/expenses', [ExpenseController::class, 'store'])->name('expenses.store');
+    Route::get('/expenses/report', [ExpenseReportController::class, 'index'])->name('expenses.report');
     Route::delete('/expenses/{expense}', [ExpenseController::class, 'destroy'])->name('expenses.destroy');
     Route::get('/expenses/{expense}/edit', [ExpenseController::class, 'edit'])->name('expenses.edit');
     Route::put('/expenses/{expense}', [ExpenseController::class, 'update'])->name('expenses.update');
-
-    Route::get('/expenses/report', [ExpenseReportController::class, 'index'])->name('expenses.report');
+    Route::get('/expenses/{expense}', [ExpenseController::class, 'show'])->name('expenses.show');
 });
 
 require __DIR__.'/auth.php';
