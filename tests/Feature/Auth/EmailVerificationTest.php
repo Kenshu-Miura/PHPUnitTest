@@ -55,4 +55,23 @@ class EmailVerificationTest extends TestCase
 
         $this->assertFalse($user->fresh()->hasVerifiedEmail());
     }
+
+    public function test_can_resend_verification_email(): void
+    {
+        $user = User::factory()->unverified()->create();
+        $this->actingAs($user);
+
+        $response = $this->post(route('verification.send'));
+        $response->assertRedirect();
+        $response->assertSessionHas('status', 'verification-link-sent');
+    }
+
+    public function test_cannot_resend_verification_email_when_already_verified(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->post(route('verification.send'));
+        $response->assertRedirect(route('dashboard'));
+    }
 }
