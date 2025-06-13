@@ -5,6 +5,7 @@ namespace Tests\Feature\Auth;
 use App\Http\Responses\LoginResponse;
 use App\Providers\FortifyServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 use Laravel\Fortify\Fortify;
 use Tests\TestCase;
@@ -22,9 +23,12 @@ class FortifyServiceProviderTest extends TestCase
 
     public function test_login_response_is_bound(): void
     {
+        $provider = new FortifyServiceProvider($this->app);
+        $provider->register();
+
         $this->assertInstanceOf(
-            LoginResponse::class,
-            $this->app->make(LoginResponseContract::class)
+            \App\Http\Responses\LoginResponse::class,
+            $this->app->make(\Laravel\Fortify\Contracts\LoginResponse::class)
         );
     }
 
@@ -58,9 +62,16 @@ class FortifyServiceProviderTest extends TestCase
 
     public function test_verify_email_view_is_registered(): void
     {
-        $user = \App\Models\User::factory()->unverified()->create();
+        $user = $this->createUser();
         $response = $this->actingAs($user)->get('/verify-email');
         $response->assertStatus(200);
         $response->assertViewIs('auth.verify-email');
+    }
+
+    private function createUser()
+    {
+        return \App\Models\User::factory()->create([
+            'email_verified_at' => null,
+        ]);
     }
 } 
