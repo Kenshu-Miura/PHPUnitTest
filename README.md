@@ -10,9 +10,9 @@
 - 過去6ヶ月の支出推移グラフ
 
 ## 開発環境
-- PHP 8.1以上
-- Laravel 10.x
-- SQLite
+- PHP 8.2以上
+- Laravel 12.x
+- MySQL 8.0
 - Tailwind CSS
 - Docker
 - Docker Compose
@@ -34,7 +34,12 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-4. データベースのセットアップ
+4. Dockerコンテナの起動
+```bash
+docker compose up -d
+```
+
+5. データベースのセットアップ
 ```bash
 # セッションテーブルの作成
 php artisan session:table
@@ -43,7 +48,7 @@ php artisan session:table
 php artisan migrate:fresh --seed
 ```
 
-5. 開発サーバーの起動
+6. 開発サーバーの起動
 ```bash
 # サーバーの起動
 ./vendor/bin/sail up -d
@@ -52,7 +57,7 @@ php artisan migrate:fresh --seed
 ./vendor/bin/sail down
 ```
 
-6. アプリケーションへのアクセス
+7. アプリケーションへのアクセス
 ブラウザで以下のURLにアクセスしてください：
 ```
 http://localhost
