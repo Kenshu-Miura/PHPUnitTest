@@ -56,4 +56,40 @@ class ExpenseController extends Controller
         return redirect()->route('expenses.index')
             ->with('success', '支出を削除しました。');
     }
+
+    public function edit(Expense $expense)
+    {
+        if ($expense->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        return view('expenses.edit', [
+            'expense' => $expense,
+            'categories' => Expense::CATEGORIES
+        ]);
+    }
+
+    public function update(Request $request, Expense $expense)
+    {
+        if ($expense->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $request->validate([
+            'amount' => 'required|numeric|min:0',
+            'category' => 'required|in:' . implode(',', Expense::CATEGORIES),
+            'description' => 'nullable|string|max:255',
+            'expense_date' => 'required|date'
+        ]);
+
+        $expense->update([
+            'amount' => $request->amount,
+            'category' => $request->category,
+            'description' => $request->description,
+            'expense_date' => $request->expense_date
+        ]);
+
+        return redirect()->route('expenses.index')
+            ->with('success', '支出を更新しました。');
+    }
 } 

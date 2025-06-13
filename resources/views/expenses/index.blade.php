@@ -88,14 +88,20 @@
                                             {{ $expense->description }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            <form method="POST" action="{{ route('expenses.destroy', $expense) }}" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900"
-                                                    onclick="return confirm('本当に削除しますか？')">
-                                                    削除
-                                                </button>
-                                            </form>
+                                            <div class="flex space-x-2">
+                                                <a href="{{ route('expenses.edit', $expense) }}" 
+                                                   class="text-indigo-600 hover:text-indigo-900">
+                                                    編集
+                                                </a>
+                                                <form method="POST" action="{{ route('expenses.destroy', $expense) }}" class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-red-600 hover:text-red-900"
+                                                        onclick="return confirm('本当に削除しますか？')">
+                                                        削除
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach

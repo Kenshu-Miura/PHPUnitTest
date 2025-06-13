@@ -46,7 +46,7 @@ class ExpenseReportController extends Controller
             ->where('expense_date', '>=', $date->copy()->subMonths(5)->startOfMonth())
             ->where('expense_date', '<=', $date->endOfMonth())
             ->select(
-                DB::raw('strftime("%Y-%m", expense_date) as month'),
+                DB::raw('DATE_FORMAT(expense_date, "%Y-%m") as month'),
                 DB::raw('SUM(amount) as total')
             )
             ->groupBy('month')
